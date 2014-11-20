@@ -27,7 +27,7 @@
         android:layout_width="@dimen/navigation_drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:name="com.ream.app.DocumentSelectDrawer"
+        android:name="uk.co.humbell.anoted.DocumentSelectDrawer"
         tools:layout="@layout/fragment_document_drawer" />
 
 </android.support.v4.widget.DrawerLayout>
