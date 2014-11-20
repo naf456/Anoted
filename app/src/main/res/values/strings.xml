@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Another Notepad</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_new_document">New Document</string>
+    <string name="action_new">New</string>
+    <string name="action_edit_mode">Manage</string>
+    <string name="action_edit">Manage</string>
+    <string name="dialog_title_change_document_title">Change Document Title</string>
+    <string name="desc_document_remove_button">Remove Document</string>
+    <string name="actionbar_global_title">Documents</string>
+
+</resources>

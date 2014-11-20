@@ -1,0 +1,25 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity$PlaceholderFragment">
+
+    <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/scrollView" android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true">
+        <requestFocus/>
+        <EditText android:id="@+id/document_stage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:ems="10"
+                android:gravity="top|left" android:background="@android:color/transparent"
+                android:scrollbars="vertical"
+                android:padding="10dp"/>
+    </ScrollView>
+
+</RelativeLayout>
