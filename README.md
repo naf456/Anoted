@@ -9,20 +9,20 @@ Another note editor for android
   - [X] Syncing of edited documents to the database
   - [ ] Allow the display and editing of rich text
   - [ ] Async routines for database access
-  - [ ] Settings activity implmeneted, and allows the switch of themes.
-  - [ ] Intergrate time stamps into database, and UI
-  - [ ] Drawer can be sorted variously, to benifit the users
+  - [ ] Settings activity implemented, and allows the switch of themes.
+  - [ ] Integrate time stamps into database, and UI
+  - [ ] Drawer sorting ability
   - [ ] Documents permissions and lock settings
-  - [ ] Sync documents to cloud servics
+  - [ ] Sync documents to cloud services
   - [ ] Share notes through Bluetooth and NFC
-  - [ ] Fullfill important unit tests
-  - [ ] Clarify UI design satifastory
+  - [ ] Fulfill important unit tests
+  - [ ] Clarify UI design satisfactory
 
 ##Biography
 
 My most used note editor is Simple Notepad on the Google Play store. I like it as allows customization of the interface, is fairly straight forward, and has great support for older devices.
 
-Anoted (pronouced An-note-ed) will follow in the steps of Simple Notepad, by providing several styles of UI - Light, TransLight, Dark, TransDark, following the android styles, Holo light, holo / material light etc... 
+Anoted (pronounced An-note-ed) will follow in the steps of Simple Notepad, by providing several styles of UI - Light, TransLight, Dark, TransDark, following the android styles, Holo light, holo / material light etc...
 
 Anoted uses the Android navigation drawer to provide a flat way to open notes (termed "Documents" inside the source code)
 The wanted design is for the drawer to appear full screen - action bars hidden, giving the user non-obtrusive, priority access to the navigation drawer (termed Document Drawer in source code).

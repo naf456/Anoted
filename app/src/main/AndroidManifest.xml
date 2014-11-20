@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ream.app" >
+    package="uk.co.humbell.anoted" >
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/xpad"
+        android:icon="@drawable/ic_anoted"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity

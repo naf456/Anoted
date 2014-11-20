@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Ream.iml" filepath="$PROJECT_DIR$/Ream.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Anoted.iml" filepath="$PROJECT_DIR$/Anoted.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
 </project>
-
