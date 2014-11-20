@@ -1,7 +1,7 @@
 Anoted
 ======
 
-Android note editor for android
+Another note editor for android
 
 ##Status 
   - [X] Basis database CRUD routines
