@@ -12,5 +12,6 @@
     <string name="dialog_title_change_document_title">Change Document Title</string>
     <string name="desc_document_remove_button">Remove Document</string>
     <string name="actionbar_global_title">Documents</string>
+    <string name="no_documents_open">No Documents Open</string>
 
 </resources>
