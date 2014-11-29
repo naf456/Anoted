@@ -7,6 +7,7 @@ import android.app.ActionBar;
 import android.util.Log;
 import android.view.*;
 import android.widget.EditText;
+import uk.co.humbell.anoted.store.SimpleDocument;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -33,6 +34,10 @@ public class DocumentEditorFragment extends Fragment {
         args.putString(ARG_DOCUMENT_CONTENT, content);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public static DocumentEditorFragment newInstance(SimpleDocument document) {
+        return newInstance(document.getID(), document.getName(), document.getContent());
     }
 
     public DocumentEditorFragment() {
@@ -79,7 +84,7 @@ public class DocumentEditorFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // If the drawer is open, show the global app actions in the action bar. See also
+        // If the drawer is open, show the drawer app actions in the action bar. See also
         // showGlobalContextActionBar, which controls the top-left area of the action bar.
         ActionBar actionbar = getActivity().getActionBar();
         actionbar.setTitle(getArguments().getString(DocumentEditorFragment.ARG_DOCUMENT_TITLE));

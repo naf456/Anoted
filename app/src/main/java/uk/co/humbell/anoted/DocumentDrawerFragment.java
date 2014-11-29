@@ -2,22 +2,20 @@ package uk.co.humbell.anoted;
 
 
 import android.app.Activity;
-import android.app.ActionBar;
 import android.app.Fragment;
-import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 
 import java.util.List;
@@ -27,7 +25,8 @@ import java.util.List;
  * I kinda implement the drawer as a controller for the activity.
  * The drawer sends signals to the activity - like creating a new
  */
-public class DocumentSelectDrawer extends Fragment implements TitlesListAdapter.Callbacks {
+public class DocumentDrawerFragment extends Fragment implements TitlesListAdapter.Callbacks,
+        Toolbar.OnMenuItemClickListener {
 
     /**
      * Remember the position of the selected item.
@@ -51,14 +50,13 @@ public class DocumentSelectDrawer extends Fragment implements TitlesListAdapter.
     //Used to restore are position if we exit and resume the app.
     private int mCurrentSelectedPosition = 0;
     private boolean mFromSavedInstanceState;
-    private boolean mHasActionBar = false;
 
 
     private List<String> mDocumentTitles; //Holding all our titles
     private boolean mInEditMode = false;
 
 
-    public DocumentSelectDrawer() {
+    public DocumentDrawerFragment() {
     }
 
     @Override
@@ -87,58 +85,10 @@ public class DocumentSelectDrawer extends Fragment implements TitlesListAdapter.
         //Invisible drawer overlay.
         this.mDrawerLayout.setScrimColor(Color.argb(0,0,0,0));
 
-        if(getActionBar() == null) mHasActionBar = false;
-
-        if(mHasActionBar) {
-            // set up the drawer's list view with items and click listener
-            ActionBar actionBar = getActionBar();
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeButtonEnabled(true);
-        }
-
-        // ActionBarDrawerToggle ties together the the proper interactions
-        // between the navigation drawer and the action bar app icon.
-        mDrawerToggle = new ActionBarDrawerToggle(
-                getActivity(),                    /* host Activity */
-                DocumentSelectDrawer.this.mDrawerLayout,                    /* DrawerLayout object */
-                R.string.navigation_drawer_open,  /* "open drawer" description for accessibility */
-                R.string.navigation_drawer_close  /* "close drawer" description for accessibility */
-        ) {
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-                if (!isAdded()) { return; }
-                if(mInEditMode) { setEditMode(false); }
-                getActivity().invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
-            }
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                if (!isAdded()) {
-                    return;
-                }
-
-                //Close the IME keyboard if it's open.
-                InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                if(imm.isActive())
-                    imm.hideSoftInputFromWindow(mTitlesList.getWindowToken(),0);
-
-                getActivity().invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
-            }
-        };
         // We want the drawer to open up at launch
         if (!mFromSavedInstanceState) {
             this.mDrawerLayout.openDrawer(mFragmentContainerView);
         }
-
-        // Defer code dependent on restoration of previous instance state.
-        this.mDrawerLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                mDrawerToggle.syncState();
-            }
-        });
 
         this.mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDocumentTitles = documentTitles;
@@ -151,8 +101,9 @@ public class DocumentSelectDrawer extends Fragment implements TitlesListAdapter.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        mTitlesList = (ListView) inflater.inflate(
-                R.layout.fragment_document_drawer, container, false);
+        View view = inflater.inflate(R.layout.fragment_document_drawer, container, false);
+
+        mTitlesList = (ListView)view.findViewById(R.id.document_drawer_listview);
         mTitlesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -160,37 +111,12 @@ public class DocumentSelectDrawer extends Fragment implements TitlesListAdapter.
             }
         });
 
-        return mTitlesList;
-    }
+        Toolbar toolbar =
+                (Toolbar)view.findViewById(R.id.drawerToolbar);
+        toolbar.setOnMenuItemClickListener(this);
+        toolbar.inflateMenu(R.menu.drawer);
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // If the drawer is open, show the global app actions in the action bar. See also
-        // showGlobalContextActionBar, which controls the top-left area of the action bar.
-        if (mDrawerLayout != null && isDrawerOpen()) {
-            inflater.inflate(R.menu.global, menu);
-            getActionBar().setTitle(R.string.actionbar_global_title);
-        }
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-
-        if (item.getItemId() == R.id.action_new_document && mCallbacks != null) {
-            mCallbacks.onNavigationDrawerNewDocument();
-            return true;
-        }
-
-        if (item.getItemId() == R.id.action_edit_mode) {
-            mInEditMode = !mInEditMode;
-            ((TitlesListAdapter) mTitlesList.getAdapter()).setEditMode(mInEditMode);
-        }
-
-        return super.onOptionsItemSelected(item);
+        return view;
     }
 
     @Override
@@ -245,9 +171,6 @@ public class DocumentSelectDrawer extends Fragment implements TitlesListAdapter.
         mInEditMode = editMode;
     }
 
-    public boolean isDrawerOpen() {
-        return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mFragmentContainerView);
-    }
 
     private void selectItem(int position) {
         mCurrentSelectedPosition = position;
@@ -266,24 +189,40 @@ public class DocumentSelectDrawer extends Fragment implements TitlesListAdapter.
 
     }
 
-    private ActionBar getActionBar() {
-        return getActivity().getActionBar();
-    }
-
     @Override
     public void onDocumentRemove(int position) {
         if(mCallbacks == null){ return; }
         mCallbacks.onNavigationDrawerRemoveDocument(position);
     }
 
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        if (item.getItemId() == R.id.action_new_document && mCallbacks != null) {
+            mCallbacks.onNavigationDrawerNewDocument();
+            return true;
+        }
+
+        if (item.getItemId() == R.id.action_edit_mode) {
+            mInEditMode = !mInEditMode;
+            ((TitlesListAdapter) mTitlesList.getAdapter()).setEditMode(mInEditMode);
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
     /**
-     * Callbacks interface that all activities using this fragment must implement.
+     * Callbacks interface that instructs activities .
      */
     public static interface NavigationDrawerCallbacks {
 
         /**
-         * Called when global menu create is select.
+         * Called when drawer menu create is select.
          */
         void onNavigationDrawerNewDocument();
 

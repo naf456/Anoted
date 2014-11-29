@@ -7,6 +7,7 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.widget.EditText;
+import uk.co.humbell.anoted.store.SimpleDocument;
 
 /**
  * Created by nathan on 08/11/14.
@@ -25,6 +26,10 @@ public class TitleEditorDialog extends DialogFragment {
         args.putString(TitleEditorDialog.ARGS_DOCUMENT_TITLE, documentTitle);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public static TitleEditorDialog getInstance(SimpleDocument document) {
+        return getInstance(document.getID(), document.getName());
     }
 
     @Override

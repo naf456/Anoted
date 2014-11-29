@@ -109,7 +109,7 @@ public class AnotedDocumentStore implements uk.co.humbell.anoted.store.DocumentS
 
         Cursor c = mDatabase.query(
                 DatabaseHelper.DOCUMENTS_TABLE_NAME, //table name
-                (String[])neededColumns.toArray(), //columns to retrieve
+                neededColumns.toArray(new String[neededColumns.size()]), //columns to retrieve
                 DatabaseHelper.COL_NAME_ANDROID_ID + "=" + id.toString(), //where clause
                 null, //where clause variable injection
                 null, //group by
@@ -141,28 +141,39 @@ public class AnotedDocumentStore implements uk.co.humbell.anoted.store.DocumentS
 
         List<String> neededColumns = new ArrayList<String>();
 
-        for(int propertyCode : requestedProperties) {
-            switch(propertyCode) {
-                case REQUEST_ID :
+        if(requestedProperties != null) {
+
+            for (int propertyCode : requestedProperties) {
+                switch (propertyCode) {
+                    case REQUEST_ID:
                     /* We don't do anything here, as we retrieve the Id by default */
-                    break;
-                case REQUEST_NAME :
-                    neededColumns.add(DatabaseHelper.COL_NAME_NAME);
-                    break;
-                case REQUEST_CONTENT :
-                    neededColumns.add(DatabaseHelper.COL_NAME_CONTENT);
-                    break;
-                default:
-                    Log.e(TAG_NAME, "Don't recognise property request code: " + propertyCode);
-                    break;
+                        break;
+                    case REQUEST_NAME:
+                        neededColumns.add(DatabaseHelper.COL_NAME_NAME);
+                        break;
+                    case REQUEST_CONTENT:
+                        neededColumns.add(DatabaseHelper.COL_NAME_CONTENT);
+                        break;
+                    default:
+                        Log.e(TAG_NAME, "Don't recognise property request code: " + propertyCode);
+                        break;
+                }
             }
+        }
+
+        String selectionQuery;
+        if(width <= 0) {
+            selectionQuery = null; // we're going to retrieve all rows from the table.
+        } else {
+            //We will retrieve a page
+            selectionQuery = DatabaseHelper.COL_NAME_ANDROID_ID + ">" + (width * (page - 1)) + " AND " +
+                    DatabaseHelper.COL_NAME_ANDROID_ID + "<" + (width * page);
         }
 
         //TODO find correct way to query pages from SQLite
         Cursor c = mDatabase.query(DatabaseHelper.DOCUMENTS_TABLE_NAME,
-                (String[]) neededColumns.toArray(),
-                DatabaseHelper.COL_NAME_ANDROID_ID + ">" + (width * (page - 1) + " AND " +
-                        DatabaseHelper.COL_NAME_ANDROID_ID + "<" + (width * page)), // where
+                neededColumns.toArray(new String[neededColumns.size()]),
+                selectionQuery, // where
                 null, // where arguments
                 null, // group by
                 null, // having
@@ -184,9 +195,9 @@ public class AnotedDocumentStore implements uk.co.humbell.anoted.store.DocumentS
             retId = c.getLong(c.getColumnIndex(DatabaseHelper.COL_NAME_ANDROID_ID));
 
             for(String columns : neededColumns) {
-                if(columns == DatabaseHelper.COL_NAME_NAME)
+                if(columns.equals(DatabaseHelper.COL_NAME_NAME))
                     retName = c.getString(c.getColumnIndex(DatabaseHelper.COL_NAME_NAME));
-                if(columns == DatabaseHelper.COL_NAME_CONTENT)
+                if(columns.equals(DatabaseHelper.COL_NAME_CONTENT))
                     retContent = c.getString(c.getColumnIndex(DatabaseHelper.COL_NAME_CONTENT));
             }
 

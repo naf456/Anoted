@@ -1,15 +1,28 @@
 <resources>
 
     <style name="AppTheme" parent="Theme.AppCompat">
+
         <!-- colorPrimary is used for the default action bar background -->
-        <item name="colorPrimary">#B870B8</item>
+        <item name="colorPrimary">#fafafa</item>
 
         <!-- colorPrimaryDark is used for the status bar -->
-        <item name="colorPrimaryDark">#B870B8</item>
+        <item name="colorPrimaryDark">#e0e0e0</item>
 
         <!-- colorAccent is used as the default value for colorControlActivated,
              which is used to tint widgets -->
-        <item name="colorAccent">@color/noted_accent</item>
+        <item name="colorAccent"> #ffc107</item>
+    </style>
+
+    <style name="LightAppBarText" parent="Theme.AppCompat">
+
+        <!-- main text colour -->
+        <item name="android:textColorPrimary">@color/abc_primary_text_material_light</item>
+
+        <item name="android:actionMenuTextColor">@color/abc_primary_text_material_light</item>
+        
+        <!-- overflow icon color -->
+        <item name="android:textColorSecondary">@color/abc_secondary_text_material_light</item>
+
     </style>
 
 </resources>
