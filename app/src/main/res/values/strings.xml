@@ -13,5 +13,7 @@
     <string name="desc_document_remove_button">Remove Document</string>
     <string name="actionbar_global_title">Documents</string>
     <string name="no_documents_open">No Documents Open</string>
+    <string name="toolbar_title_notes">Notes</string>
+
 
 </resources>

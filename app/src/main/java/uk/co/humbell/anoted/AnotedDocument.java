@@ -41,6 +41,6 @@ public class AnotedDocument implements SimpleDocument {
 
     @Override
     public boolean hasContent() {
-        return mName != null;
+        return mContent != null;
     }
 }

@@ -1,27 +1,25 @@
 <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_height="match_parent"
         android:layout_width="match_parent">
 
     <android.support.v7.widget.Toolbar
             android:id="@+id/drawerToolbar"
-            android:layout_height="wrap_content"
+            android:layout_height="?attr/actionBarSize"
             android:layout_width="match_parent"
-            android:minHeight="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            android:theme="@style/LightAppBarText"
-            android:popupTheme="@style/AppTheme">
+            android:background="?attr/colorPrimary">
     </android.support.v7.widget.Toolbar>
 
     <ListView
             android:id="@+id/document_drawer_listview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:choiceMode="singleChoice"
-        android:background="#c8000000"
-        tools:context=".NavigationDrawerFragment" android:dividerHeight="0dp"
-        android:divider="@android:color/transparent"
-        android:animateLayoutChanges="true" android:layout_below="@+id/drawerToolbar"/>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:choiceMode="singleChoice"
+            android:background="#c8000000"
+            tools:context=".NavigationDrawerFragment" android:dividerHeight="0dp"
+            android:divider="@android:color/transparent"
+            android:animateLayoutChanges="true" android:layout_below="@+id/drawerToolbar"/>
+
 
 </RelativeLayout>

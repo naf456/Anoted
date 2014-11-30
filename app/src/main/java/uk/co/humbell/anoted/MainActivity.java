@@ -21,7 +21,6 @@ package uk.co.humbell.anoted;
 
 import android.app.Activity;
 
-import android.app.ActionBar;
 import android.app.FragmentManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -41,17 +40,12 @@ public class MainActivity extends Activity
     /*
      * Tag we use to print messages to logcat
      */
-    private final String TAG_NAME = this.getClass().getSimpleName();
+    private final String TAG_NAME = MainActivity.class.getSimpleName();
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private DocumentDrawerFragment mDocumentDrawerFragment;
-
-    /**
-     * Used to store the last screen title. For use in {@link #restoreActionBar()}.
-     */
-    private CharSequence mTitle;
 
     private AnotedDocumentStore mDocumentStore;
     private List<SimpleDocument> mDocuments;
@@ -63,12 +57,12 @@ public class MainActivity extends Activity
 
         mDocumentDrawerFragment = (DocumentDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
-        mTitle = getTitle();
 
         //Setting up DocumentRefs
         mDocumentStore = new AnotedDocumentStore(this);
+        mDocumentStore.open();
         mDocumentStore.registerDocumentStoreObserver(this);
-        mDocuments = mDocumentStore.getPageOfDocuments(0, 1, null);
+        mDocuments = mDocumentStore.getPageOfDocuments(0, 1, new int[]{AnotedDocumentStore.REQUEST_NAME});
 
         //Set up the drawer.
         mDocumentDrawerFragment.setUp(
@@ -84,28 +78,8 @@ public class MainActivity extends Activity
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        mDocumentStore.close();
-    }
-
-    private List<String> listTitles() {
-        List<String> titles = new ArrayList<String>();
-        for(SimpleDocument document : mDocuments) {
-            titles.add(document.getName());
-        }
-        return titles;
-    }
-
-    @Override
     public void onNavigationDrawerItemSelected(int position) {
-
-        SimpleDocument document = mDocuments.get(position);
-        // update the main content by replacing fragments
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, DocumentEditorFragment.newInstance(document))
-                .commit();
+        new AsyncOpenDocument().execute(mDocuments.get(position).getID());
     }
 
     @Override
@@ -129,20 +103,6 @@ public class MainActivity extends Activity
         } catch (DocumentStore.DocumentDeleteException e) {
             toastError("Failed to delete document");
         }
-    }
-
-    public void toastError(String string) {
-        final String compiledMsg = string + ". Please Inform Administrator";
-        Toast errorToast = new Toast(this);
-        errorToast.setText(compiledMsg);
-        errorToast.setDuration(Toast.LENGTH_LONG);
-        errorToast.show();
-    }
-
-    public void restoreActionBar() {
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(mTitle);
     }
 
     @Override
@@ -170,10 +130,30 @@ public class MainActivity extends Activity
 
     @Override
     public void onDocumentStoreChange() {
-        new AsyncMDocumentUpdater().execute();
+        new AsyncPageUpdater().execute();
     }
 
-    private class AsyncMDocumentUpdater extends AsyncTask<Void, Void, Void> {
+    private List<String> listTitles() {
+
+        if(mDocuments == null)return new ArrayList<String>();
+        List<String> titles = new ArrayList<String>();
+        for(SimpleDocument document : mDocuments) {
+            titles.add(document.getName());
+        }
+        return titles;
+    }
+
+    public void toastError(String string) {
+        final String compiledMsg = string + ". Please Inform Administrator";
+        Toast.makeText(getApplicationContext(), compiledMsg, Toast.LENGTH_LONG).show();
+    }
+
+
+
+    /**
+     * Updates mDocuments. This is called on DocumentStoreChange.
+     */
+    private class AsyncPageUpdater extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... voids) {
@@ -181,10 +161,16 @@ public class MainActivity extends Activity
                 try {
                     mDocuments = mDocumentStore.getPageOfDocuments(0, 0, new int[]{AnotedDocumentStore.REQUEST_NAME});
                 } catch (DocumentStore.DocumentRetrieveException e) {
-                    toastError("Failed to retrieve document");
+                    this.cancel(true);
                 }
             }
             return null;
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            toastError("Something went wrong in your document store.");
         }
 
         @Override
@@ -192,6 +178,7 @@ public class MainActivity extends Activity
             super.onPostExecute(unused);
             mDocumentDrawerFragment.updateTitles(listTitles());
         }
+
     }
 
     private class AsyncDocumentSynchronizer extends AsyncTask<SimpleDocument, Void, Void> {
@@ -209,6 +196,24 @@ public class MainActivity extends Activity
                 }
             }
             return null;
+        }
+    }
+
+    private class AsyncOpenDocument extends AsyncTask<Long, Void, SimpleDocument> {
+
+        @Override
+        protected SimpleDocument doInBackground(Long... Ids) {
+            return mDocumentStore.getDocumentById(Ids[0], new int[] { AnotedDocumentStore.REQUEST_NAME,
+                    AnotedDocumentStore.REQUEST_CONTENT });
+        }
+
+        @Override
+        protected void onPostExecute(SimpleDocument document) {
+            // update the main content by replacing fragments
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, DocumentEditorFragment.newInstance(document))
+                    .commit();
         }
     }
 

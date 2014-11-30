@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.EditText;
 import uk.co.humbell.anoted.store.SimpleDocument;
 
@@ -19,12 +22,18 @@ public class TitleEditorDialog extends DialogFragment {
     private static final String ARGS_DOCUMENT_REF = "document_reference";
     private static final String ARGS_DOCUMENT_TITLE = "document_title";
 
-    public static TitleEditorDialog getInstance(long documentRef, String documentTitle) {
+    public static TitleEditorDialog getInstance(Long documentRef, String documentTitle) {
+
+        if(documentRef == null) { throw new NullPointerException("Title editor requires a document ID"); }
+        if(documentTitle == null) { documentTitle = ""; }
+
         TitleEditorDialog fragment = new TitleEditorDialog();
         Bundle args = new Bundle();
+
         args.putLong(TitleEditorDialog.ARGS_DOCUMENT_REF, documentRef);
         args.putString(TitleEditorDialog.ARGS_DOCUMENT_TITLE, documentTitle);
         fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -45,19 +54,21 @@ public class TitleEditorDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        final EditText editText = new EditText(getActivity());
-        String title = getArguments().getString(TitleEditorDialog.ARGS_DOCUMENT_TITLE);
-        editText.setText(title, EditText.BufferType.EDITABLE);
+        LayoutInflater inflater = (LayoutInflater)this.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.dialog_view_change_document_title, null);
+
+        final EditText title = (EditText)view.findViewById(R.id.change_document_title_title);
+        title.setText(getArguments().getString(TitleEditorDialog.ARGS_DOCUMENT_TITLE));
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
             .setTitle(R.string.dialog_title_change_document_title)
-            .setView(editText)
+            .setView(view)
             .setPositiveButton(R.string.abc_action_mode_done, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     if (mCallback != null) {
                         mCallback.onChangeDocumentTitle(getArguments().getLong(TitleEditorDialog.ARGS_DOCUMENT_REF),
-                                editText.getText().toString());
+                                title.getText().toString());
                     }
                 }
             });

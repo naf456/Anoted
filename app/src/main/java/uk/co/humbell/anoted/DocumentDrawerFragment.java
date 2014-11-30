@@ -115,7 +115,7 @@ public class DocumentDrawerFragment extends Fragment implements TitlesListAdapte
                 (Toolbar)view.findViewById(R.id.drawerToolbar);
         toolbar.setOnMenuItemClickListener(this);
         toolbar.inflateMenu(R.menu.drawer);
-
+        toolbar.setTitle(R.string.toolbar_title_notes);
         return view;
     }
 
@@ -197,10 +197,6 @@ public class DocumentDrawerFragment extends Fragment implements TitlesListAdapte
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
 
         if (item.getItemId() == R.id.action_new_document && mCallbacks != null) {
             mCallbacks.onNavigationDrawerNewDocument();

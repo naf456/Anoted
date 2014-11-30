@@ -46,17 +46,17 @@ public class AnotedDocumentStore implements uk.co.humbell.anoted.store.DocumentS
 
     AnotedDocumentStore(Context context) {
         mDatabaseHelper = new DatabaseHelper(context);
-        mDatabase = mDatabaseHelper.getWritableDatabase();
     }
 
     @Override
     public void open() {
-        if (mDatabase.isOpen() == false) mDatabase = mDatabaseHelper.getWritableDatabase();
+        if (mDatabase == null || mDatabase.isOpen() == false)
+            mDatabase = mDatabaseHelper.getWritableDatabase();
     }
 
     @Override
     public void close() {
-        if(mDatabase.isOpen()) mDatabase.close();
+        if(mDatabase != null && mDatabase.isOpen()) mDatabase.close();
     }
 
     @Override
@@ -81,6 +81,8 @@ public class AnotedDocumentStore implements uk.co.humbell.anoted.store.DocumentS
         catch (DocumentRetrieveException e) {
             throw new DocumentCreateException();    }
 
+        notifyDocumentStoreChange();
+
         return createdDocument;
     }
 
@@ -89,11 +91,16 @@ public class AnotedDocumentStore implements uk.co.humbell.anoted.store.DocumentS
 
         List<String> neededColumns = new ArrayList<String>();
 
+        //We retrieve the id by default (A document is pretty useless without it)
+        neededColumns.add(DatabaseHelper.COL_NAME_ANDROID_ID);
+
         if(id == null) throw new NullPointerException("Id cannot be null");
         if(requestedProperties != null) {
 
             for (int propertyCode : requestedProperties) {
                 switch (propertyCode) {
+                    case REQUEST_ID:
+                        /* We don't do anything here, as we retrieve the Id by default */
                     case REQUEST_NAME:
                         neededColumns.add(DatabaseHelper.COL_NAME_NAME);
                         break;
@@ -119,17 +126,17 @@ public class AnotedDocumentStore implements uk.co.humbell.anoted.store.DocumentS
 
         if( c.getCount() == 0) return null;
 
-        c.moveToNext();
         Long retId = null;
         String retName = null;
         String retContent = null;
 
+        c.moveToFirst();
+
+        retId = c.getLong(c.getColumnIndex(DatabaseHelper.COL_NAME_ANDROID_ID));
         for(String reqProp : neededColumns) {
-            if(reqProp == DatabaseHelper.COL_NAME_ANDROID_ID)
-                retId = c.getLong(c.getColumnIndex(DatabaseHelper.COL_NAME_ANDROID_ID));
-            else if(reqProp == DatabaseHelper.COL_NAME_NAME)
+            if(reqProp.equals(DatabaseHelper.COL_NAME_NAME))
                 retName = c.getString(c.getColumnIndex(DatabaseHelper.COL_NAME_NAME));
-            else if(reqProp == DatabaseHelper.COL_NAME_CONTENT)
+            else if(reqProp.equals(DatabaseHelper.COL_NAME_CONTENT))
                 retContent = c.getString(c.getColumnIndex(DatabaseHelper.COL_NAME_CONTENT));
         }
 
@@ -140,6 +147,9 @@ public class AnotedDocumentStore implements uk.co.humbell.anoted.store.DocumentS
     public List<SimpleDocument> getPageOfDocuments(int width, int page, int[] requestedProperties) {
 
         List<String> neededColumns = new ArrayList<String>();
+
+        //We fetch _id by default (a document is pretty pointless without one.)
+        neededColumns.add(DatabaseHelper.COL_NAME_ANDROID_ID);
 
         if(requestedProperties != null) {
 
@@ -170,7 +180,6 @@ public class AnotedDocumentStore implements uk.co.humbell.anoted.store.DocumentS
                     DatabaseHelper.COL_NAME_ANDROID_ID + "<" + (width * page);
         }
 
-        //TODO find correct way to query pages from SQLite
         Cursor c = mDatabase.query(DatabaseHelper.DOCUMENTS_TABLE_NAME,
                 neededColumns.toArray(new String[neededColumns.size()]),
                 selectionQuery, // where
@@ -184,9 +193,8 @@ public class AnotedDocumentStore implements uk.co.humbell.anoted.store.DocumentS
 
         List<SimpleDocument> pageOfDocuments = new ArrayList<SimpleDocument>();
 
-        do{
-            c.moveToNext();
-
+        c.moveToFirst();
+        while(c.isAfterLast() == false) {
             Long retId = null;
             String retName = null;
             String retContent = null;
@@ -202,8 +210,8 @@ public class AnotedDocumentStore implements uk.co.humbell.anoted.store.DocumentS
             }
 
             pageOfDocuments.add(new AnotedDocument(retId, retName, retContent));
+            c.moveToNext();
         }
-        while(!c.isLast());
 
         return pageOfDocuments;
     }
@@ -213,15 +221,16 @@ public class AnotedDocumentStore implements uk.co.humbell.anoted.store.DocumentS
 
         ContentValues cv = new ContentValues();
 
-        if(document.hasID()) { cv.put(DatabaseHelper.COL_NAME_ANDROID_ID, document.getID()); }
-            else { throw new DocumentSyncException(); } //We have to have an ID!
+        if(document.hasID() == false) { throw new DocumentSyncException(); } // We have to have an ID
         if(document.hasName()) { cv.put(DatabaseHelper.COL_NAME_NAME, document.getName()); }
-        if(document.hasContent()) { cv.put(DatabaseHelper.COL_NAME_CONTENT, document.getContent()); }
+        if(document.hasContent()) {
+            cv.put(DatabaseHelper.COL_NAME_CONTENT, document.getContent());
+        }
 
         mDatabase.beginTransaction();
         int affectedRows = mDatabase.update(DatabaseHelper.DOCUMENTS_TABLE_NAME,
                 cv,
-                DatabaseHelper.COL_NAME_ANDROID_ID + "+" + document.getID().toString(),
+                DatabaseHelper.COL_NAME_ANDROID_ID + "=" + document.getID().toString(),
                 null //Where clause arguments
         );
 
@@ -229,6 +238,8 @@ public class AnotedDocumentStore implements uk.co.humbell.anoted.store.DocumentS
 
         mDatabase.setTransactionSuccessful();
         mDatabase.endTransaction();
+
+        notifyDocumentStoreChange();
 
     }
 
@@ -247,6 +258,8 @@ public class AnotedDocumentStore implements uk.co.humbell.anoted.store.DocumentS
 
         mDatabase.setTransactionSuccessful();
         mDatabase.endTransaction();
+
+        notifyDocumentStoreChange();
     }
 
     @Override

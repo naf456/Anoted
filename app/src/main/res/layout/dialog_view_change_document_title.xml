@@ -6,7 +6,9 @@
 
     <EditText
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:id="@+id/editText" android:layout_alignParentTop="true" android:layout_centerHorizontal="true"
-            android:background="@android:color/transparent" android:inputType="text"/>
+            android:layout_height="wrap_content"
+            android:id="@+id/change_document_title_title"
+            android:inputType="text"
+            android:layout_centerVertical="true" android:layout_centerHorizontal="true" android:layout_margin="10dp"
+            android:background="@drawable/abc_edit_text_material"/>
 </RelativeLayout>

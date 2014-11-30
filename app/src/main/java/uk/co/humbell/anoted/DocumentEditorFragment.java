@@ -7,6 +7,7 @@ import android.app.ActionBar;
 import android.util.Log;
 import android.view.*;
 import android.widget.EditText;
+import android.widget.TextView;
 import uk.co.humbell.anoted.store.SimpleDocument;
 
 /**
@@ -56,6 +57,10 @@ public class DocumentEditorFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_document_editor, container, false);
         stage = (EditText)view.findViewById(R.id.document_stage);
         stage.setText(getArguments().getString(DocumentEditorFragment.ARG_DOCUMENT_CONTENT));
+
+        //Setting the title bar for the editor.
+        TextView title = (TextView) view.findViewById(R.id.titlebar_title);
+        title.setText(getArguments().getString(DocumentEditorFragment.ARG_DOCUMENT_TITLE));
         return view;
     }
 
@@ -94,12 +99,6 @@ public class DocumentEditorFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        saveDocument();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
         saveDocument();
     }
 
