@@ -22,8 +22,16 @@ package uk.co.humbell.anoted;
 import android.app.Activity;
 
 import android.app.FragmentManager;
+import android.app.WallpaperManager;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.service.wallpaper.WallpaperService;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.Toast;
@@ -41,6 +49,10 @@ public class MainActivity extends Activity
      * Tag we use to print messages to logcat
      */
     private final String TAG_NAME = MainActivity.class.getSimpleName();
+    private final String PREF_TRANSPARENT = "transparency";
+    private final String PREF_THEME = "theme";
+    private final String PREFOPT_THEME_DARK = "dark";
+    private final String PREFOPT_THEME_LIGHT = "light";
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -53,6 +65,11 @@ public class MainActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        /*  We setup theme before we call methods to view */
+        PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
+        setupTheme();
+
         setContentView(R.layout.activity_main);
 
         mDocumentDrawerFragment = (DocumentDrawerFragment)
@@ -71,38 +88,81 @@ public class MainActivity extends Activity
                 listTitles());
 
         //Apply default screen
-        FragmentManager fm = getFragmentManager();
-        fm.beginTransaction()
+        getFragmentManager()
+                .beginTransaction()
                 .replace(R.id.container, new DefaultFragment())
                 .commit();
     }
 
+    private void setupTheme(){
+
+        /*
+         * We can't use android's resources before we set the theme ({@link #setTheme})
+         * The constraints below need to be the same as the constants defined in
+         * "res/values/strings_activity_settings.xml"
+        */
+        final String PREF_KEY_THEME="pref_theme";
+        final String PREF_KEY_ENABLE_TRANSPARENCY = "pref_transparency";
+        final String PREF_VALUE_THEME_LIGHT = "light";
+        final String PREF_VALUE_THEME_DARK = "dark";
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String theme = prefs.getString(PREF_KEY_THEME, PREF_VALUE_THEME_LIGHT);
+        Boolean wantsTransparency = prefs.getBoolean(PREF_KEY_ENABLE_TRANSPARENCY, false);
+
+        if(theme.equals(PREF_VALUE_THEME_DARK) && wantsTransparency == false) {
+            setTheme(R.style.AppTheme);
+        }
+
+        else if (theme.equals(PREF_VALUE_THEME_DARK) && wantsTransparency == true) {
+            setTheme(R.style.AppTheme_Trans_Dark);
+        }
+
+        else if (theme.equals(PREF_VALUE_THEME_LIGHT) && wantsTransparency == false) {
+            setTheme(R.style.AppTheme_Light);
+        }
+
+        else if(theme.equals(PREF_VALUE_THEME_LIGHT) && wantsTransparency == true) {
+            setTheme(R.style.AppTheme_Trans_Light);
+        }
+
+        if(wantsTransparency) {
+            WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
+            getWindow().setBackgroundDrawable(wallpaperManager.getFastDrawable());
+        }
+    }
+
     @Override
-    public void onNavigationDrawerItemSelected(int position) {
+    public void drawerDocumentOpen(int position) {
         new AsyncOpenDocument().execute(mDocuments.get(position).getID());
     }
 
     @Override
-    public void onNavigationDrawerNewDocument() {
+    public void drawerNewDocumentRequest() {
         SimpleDocument document = mDocumentStore.createDocument(null);
         TitleEditorDialog dialog = TitleEditorDialog.getInstance(document);
         dialog.show(getFragmentManager(), "NewDocument");
     }
 
     @Override
-    public void onNavigationDrawerTitleEdit(int position) {
+    public void drawerEditNameRequest(int position) {
         SimpleDocument document = mDocuments.get(position);
         TitleEditorDialog dialog = TitleEditorDialog.getInstance(document);
         dialog.show(getFragmentManager(), "EditDocument");
     }
 
     @Override
-    public void onNavigationDrawerRemoveDocument(int position) {
+    public void drawerRemoveDocumentRequest(int position) {
         try {
             mDocumentStore.deleteDocument(mDocuments.get(position));
         } catch (DocumentStore.DocumentDeleteException e) {
             toastError("Failed to delete document");
         }
+    }
+
+    @Override
+    public void drawerShowSettingsRequest() {
+        startActivity(new Intent(this, SettingsActivity.class));
     }
 
     @Override
@@ -216,5 +276,7 @@ public class MainActivity extends Activity
                     .commit();
         }
     }
+
+
 
 }

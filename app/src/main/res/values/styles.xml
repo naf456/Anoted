@@ -1,5 +1,8 @@
 <resources>
 
+    <attr name="drawerBackground" format="color"/>
+    <attr name="editorBackground" format="color"/>
+
     <style name="AppTheme" parent="Theme.AppCompat">
 
         <!-- colorPrimary is used for the default action bar background -->
@@ -10,22 +13,47 @@
 
         <!-- colorAccent is used as the default value for colorControlActivated,
              which is used to tint widgets -->
-        <item name="colorAccent"> #00BCD4</item>
+        <item name="colorAccent">#00BCD4</item>
+
+        <item name="drawerBackground">#f1090909</item>
+
+        <!-- So we can see straight through to the default material background of the activity -->
+        <item name="editorBackground">@android:color/transparent</item>
+
     </style>
 
-    <style name="LightAppBarText" parent="AppTheme">
+    <style name="AppTheme.Trans.Dark" parent="AppTheme">
 
-        <!-- main text colour -->
-        <item name="android:textColorPrimary">@color/abc_primary_text_material_light</item>
+        <item name="drawerBackground">#f1090909</item>
 
-        <!-- overflow icon color -->
-        <item name="android:textColorSecondary">@color/abc_secondary_text_material_light</item>
+        <item name="editorBackground">#77090909</item>
 
-        <!-- menu colour -->
-        <item name="actionMenuTextColor">@color/abc_primary_text_material_light</item>
+    </style>
 
+    <style name="AppTheme.Light" parent="Theme.AppCompat.Light">
 
-        <item name="colorPrimary">#304FFE</item>
+        <!-- colorPrimary is used for the default action bar background -->
+        <item name="colorPrimary">#26A69A</item>
+
+        <!-- colorPrimaryDark is used for the status bar -->
+        <item name="colorPrimaryDark">#80CBC4</item>
+
+        <!-- colorAccent is used as the default value for colorControlActivated,
+             which is used to tint widgets -->
+        <item name="colorAccent"> #00BCD4</item>
+
+        <item name="drawerBackground">#ECEFF1</item>
+
+        <!-- So we can see straight through to the default material background of the activity -->
+        <item name="editorBackground">@android:color/transparent</item>
+
+    </style>
+
+    <style name="AppTheme.Trans.Light" parent="AppTheme.Light">
+
+        <item name="drawerBackground">#ECEFF1</item>
+
+        <item name="editorBackground">#77ECEFF1</item>
 
     </style>
 

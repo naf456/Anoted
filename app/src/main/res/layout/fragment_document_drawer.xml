@@ -16,10 +16,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:choiceMode="singleChoice"
-            android:background="#c8000000"
             tools:context=".NavigationDrawerFragment" android:dividerHeight="0dp"
             android:divider="@android:color/transparent"
+            android:background="?attr/drawerBackground"
             android:animateLayoutChanges="true" android:layout_below="@+id/drawerToolbar"/>
-
 
 </RelativeLayout>

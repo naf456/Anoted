@@ -10,10 +10,17 @@
     <string name="action_edit_mode">Manage</string>
     <string name="action_edit">Manage</string>
     <string name="dialog_title_change_document_title">Change Document Title</string>
+    <string name="dialog_title_alert_restart">Restart Anoted</string>
     <string name="desc_document_remove_button">Remove Document</string>
+    <string name="dialog_msg_apply_appearance_setting">
+        Changes to visual settings won\'t be applied until Anoted is restarted
+    </string>
     <string name="actionbar_global_title">Documents</string>
     <string name="no_documents_open">No Documents Open</string>
     <string name="toolbar_title_notes">Notes</string>
+    <string name="restart_now">Restart Now</string>
+    <string name="restart_later">Dismiss</string>
+
 
 
 </resources>

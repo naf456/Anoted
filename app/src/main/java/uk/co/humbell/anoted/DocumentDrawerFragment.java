@@ -3,9 +3,8 @@ package uk.co.humbell.anoted;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -179,11 +178,11 @@ public class DocumentDrawerFragment extends Fragment implements TitlesListAdapte
         }
         if (mDrawerLayout != null) {
             if (mCallbacks != null && !mInEditMode) {
-                mCallbacks.onNavigationDrawerItemSelected(position);
+                mCallbacks.drawerDocumentOpen(position);
                 mDrawerLayout.closeDrawer(mFragmentContainerView);
             }
             else if (mCallbacks != null && mInEditMode) {
-                mCallbacks.onNavigationDrawerTitleEdit(position);
+                mCallbacks.drawerEditNameRequest(position);
             }
         }
 
@@ -192,20 +191,25 @@ public class DocumentDrawerFragment extends Fragment implements TitlesListAdapte
     @Override
     public void onDocumentRemove(int position) {
         if(mCallbacks == null){ return; }
-        mCallbacks.onNavigationDrawerRemoveDocument(position);
+        mCallbacks.drawerRemoveDocumentRequest(position);
     }
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
 
         if (item.getItemId() == R.id.action_new_document && mCallbacks != null) {
-            mCallbacks.onNavigationDrawerNewDocument();
+            mCallbacks.drawerNewDocumentRequest();
             return true;
         }
 
         if (item.getItemId() == R.id.action_edit_mode) {
             mInEditMode = !mInEditMode;
             ((TitlesListAdapter) mTitlesList.getAdapter()).setEditMode(mInEditMode);
+        }
+
+        if (item.getItemId() == R.id.action_settings && mCallbacks != null) {
+            mCallbacks.drawerShowSettingsRequest();
+            mDrawerLayout.closeDrawer(mFragmentContainerView);
         }
 
         return super.onOptionsItemSelected(item);
@@ -220,23 +224,25 @@ public class DocumentDrawerFragment extends Fragment implements TitlesListAdapte
         /**
          * Called when drawer menu create is select.
          */
-        void onNavigationDrawerNewDocument();
+        void drawerNewDocumentRequest();
 
         /**
          * Called when an item in the navigation drawer is selected.
          */
-        void onNavigationDrawerItemSelected(int position);
+        void drawerDocumentOpen(int position);
 
         /**
          * Called when the user wants to edit the document at a position in the list view.
          * @param position the position of the document in the list view.
          */
-        void onNavigationDrawerTitleEdit(int position);
+        void drawerEditNameRequest(int position);
 
         /**
          * Called when the user wants to remove the document at a position in the list view.
          * @param position the position of the document in the list view.
          */
-        void onNavigationDrawerRemoveDocument(int position);
+        void drawerRemoveDocumentRequest(int position);
+
+        void drawerShowSettingsRequest();
     }
 }

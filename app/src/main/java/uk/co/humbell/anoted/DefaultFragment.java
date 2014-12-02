@@ -29,6 +29,6 @@ public class DefaultFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.no_document_splash, container, false);
+        return inflater.inflate(R.layout.fragment_no_document, container, false);
     }
 }

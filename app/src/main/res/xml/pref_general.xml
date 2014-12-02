@@ -1,0 +1,45 @@
+<!--
+  ~ Copyright (c) 2014 Nathaniel Bennett.
+  ~
+  ~ This file is part of Anoted android application project.
+  ~
+  ~ Anoted is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Anoted is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Anoted.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+            android:title="@string/pref_cat_appearance">
+
+        <CheckBoxPreference
+            android:key="@string/pref_key_enable_transparency"
+            android:title="@string/pref_title_enable_transparency"
+            android:summary="@string/pref_description_enable_transparency"
+            android:defaultValue="false" />
+
+        <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
+             dismiss it. -->
+        <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
+        <ListPreference
+            android:key="@string/pref_key_theme"
+            android:title="@string/pref_title_theme"
+            android:defaultValue="@string/pref_theme_dark_value"
+            android:entries="@array/pref_theme_list_titles"
+            android:entryValues="@array/pref_theme_list_values"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

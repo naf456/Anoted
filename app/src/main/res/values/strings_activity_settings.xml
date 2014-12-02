@@ -1,0 +1,49 @@
+<!--
+  ~ Copyright (c) 2014 Nathaniel Bennett.
+  ~
+  ~ This file is part of Anoted android application project.
+  ~
+  ~ Anoted is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Anoted is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Anoted.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+        <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <string name="pref_cat_appearance">Appearance</string>
+
+    <string name="pref_title_enable_transparency">
+        Enable Transparency
+    </string>
+
+    <string name="pref_key_enable_transparency">pref_transparency</string>
+    <string name="pref_description_enable_transparency">
+        Turned On, your wallpaper will seep through the background of notes.
+    </string>
+
+    <string name="pref_key_theme">pref_theme</string>
+    <string name="pref_title_theme">Theme</string>
+    <string-array name="pref_theme_list_titles">
+        <item>Light</item>
+        <item>Dark</item>
+    </string-array>
+    <string name="pref_theme_light_value">light</string>
+    <string name="pref_theme_dark_value">dark</string>
+    <string-array name="pref_theme_list_values">
+        <item>@string/pref_theme_light_value</item>
+        <item>@string/pref_theme_dark_value</item>
+    </string-array>
+
+</resources>

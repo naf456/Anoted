@@ -59,7 +59,7 @@ public class DocumentEditorFragment extends Fragment {
         stage.setText(getArguments().getString(DocumentEditorFragment.ARG_DOCUMENT_CONTENT));
 
         //Setting the title bar for the editor.
-        TextView title = (TextView) view.findViewById(R.id.titlebar_title);
+        TextView title = (TextView) view.findViewById(R.id.editor_titleBar_title);
         title.setText(getArguments().getString(DocumentEditorFragment.ARG_DOCUMENT_TITLE));
         return view;
     }
