@@ -1,7 +1,7 @@
 Anoted
 ======
 
-Anoted (pronounced Ah-note-ed) is another note taking application for Android. Priorities lie in simplicity, beauty, and feature set.
+Anoted is another note taking application for Android. Priorities lie in simplicity, beauty, and feature set.
 
 Hopefully It'll be the app you choose to take your notes with.
 
